@@ -1,0 +1,19 @@
+﻿@inherits DynamicTabSetBase
+
+@if (Tabs.Count > 0)
+{
+    <div class="tab">
+        @foreach (var tab in Tabs)
+        {
+            <button style="@GetTabButtonStyle(tab)" @onclick="@(() => SetActiveTab(tab))">@tab.Title</button>
+            <button style="@GetTabButtonStyle(tab)" @onclick="@(() => RemoveTab(tab))">X</button>
+        }
+    </div>
+
+    @foreach (var tab in Tabs)
+    {
+        <div @key="tab" class="@GetTabClass(tab)" style="height: 100%">
+            @RenderTabComponent(tab)
+        </div>
+    }
+}

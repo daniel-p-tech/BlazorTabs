@@ -1,0 +1,19 @@
+﻿@inject TabService TabService
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Document ID</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var document in DocumentsData)
+        {
+            <tr>
+                <td>@document.DocumentId</td>
+                <td><a @onclick="@(e => OnClick("DocumentDetail", document.DocumentId))" href="">@document.Description</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
