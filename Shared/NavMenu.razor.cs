@@ -9,18 +9,15 @@ namespace BlazorTabs.Shared
 {
     public partial class NavMenu
     {
-        private bool collapseNavMenu = true;
-
-        private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-        public bool IsSettingsVisible { get; set; } = false;
+        private bool m_isNavMenuVisible = true;
+        private string NavMenuCssClass => m_isNavMenuVisible ? "collapse" : null;
 
         private void ToggleNavMenu()
         {
-            collapseNavMenu = !collapseNavMenu;
+            m_isNavMenuVisible = !m_isNavMenuVisible;
         }
 
-        protected void OnClick(string page, params object[] args)
+        private void OnClick(string page, params object[] args)
         {
             TabService.OpenTab(page, args);
         }

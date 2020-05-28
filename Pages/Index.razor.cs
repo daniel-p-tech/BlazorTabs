@@ -11,7 +11,14 @@ namespace BlazorTabs.Pages
 
         protected override void OnInitialized()
         {
+            AppState.OnRoutingTypeChanged += AppState_OnRoutingTypeChanged;
             TabService.OnOpenTab += TabService_OnOpenTab;
+        }
+
+        private void AppState_OnRoutingTypeChanged()
+        {
+            m_tabs.Clear();
+            StateHasChanged();
         }
 
         private void TabService_OnOpenTab(string page, object[] args)

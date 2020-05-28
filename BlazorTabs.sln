@@ -1,9 +1,8 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorTabs", "BlazorTabs\BlazorTabs.csproj", "{81D32997-311C-42D1-B02A-C4771534D5F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorTabs", "BlazorTabs.csproj", "{81D32997-311C-42D1-B02A-C4771534D5F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

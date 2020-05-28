@@ -13,7 +13,12 @@
         {
             <tr>
                 <td>@document.DocumentId</td>
-                <td><a @onclick="@(e => OnClick("DocumentDetail", document.DocumentId))" href="">@document.Description</a></td>
+                <td>
+                    @{
+                        string pageUrl = "DocumentDetail/" + document.DocumentId;
+                    }
+                    <DynamicTabNavLink Page=@pageUrl Text=@document.Description />
+                </td>
             </tr>
         }
     </tbody>

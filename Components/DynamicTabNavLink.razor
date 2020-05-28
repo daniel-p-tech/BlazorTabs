@@ -1,0 +1,12 @@
+﻿@inject AppState AppState
+@inject TabService TabService
+
+@switch (AppState.RoutingType)
+{
+    case Models.RoutingType.Default:
+        <a class="nav-link text-light" href="@Page">@Text</a>
+        break;
+    case Models.RoutingType.Desktop:
+        <a class="nav-link text-light" @onclick="@OnClick" href="">@Text</a>
+        break;
+}

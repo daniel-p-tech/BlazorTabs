@@ -8,21 +8,17 @@
     <div class="@NavMenuCssClass navbar-collapse d-sm-inline-flex flex-sm-row-reverse" @onclick="ToggleNavMenu">
         <ul class="navbar-nav flex-grow-1">
             <li class="nav-item">
-                <a class="nav-link text-light" @onclick="@(e => OnClick("Counter"))" href="">Counter</a>
+                <DynamicTabNavLink Page="Counter" Text="Counter" />
             </li>
             <li class="nav-item">
-                <a class="nav-link text-light" @onclick="@(e => OnClick("FetchData"))" href="">FetchData</a>
+                <DynamicTabNavLink Page="FetchData" Text="Fetch Data" />
             </li>
             <li class="nav-item">
-                <a class="nav-link text-light" @onclick="@(e => OnClick("Documents"))" href="">Documents</a>
+                <DynamicTabNavLink Page="Documents" Text="Documents" />
             </li>
-            <li class="nav-item ml-lg-auto">
-                <a class="nav-link text-light" @onclick="@(e => IsSettingsVisible = !IsSettingsVisible)" href="">
-                    <span class="settings-icon"></span>
-                </a>
+            <li class="nav-item ml-lg-auto dropdown">
+                <Settings />
             </li>
         </ul>
     </div>
 </nav>
-
-<Settings @bind-Visible="IsSettingsVisible" />
