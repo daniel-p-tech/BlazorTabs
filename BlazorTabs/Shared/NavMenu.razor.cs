@@ -13,6 +13,8 @@ namespace BlazorTabs.Shared
 
         private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
+        public bool IsSettingsVisible { get; set; } = false;
+
         private void ToggleNavMenu()
         {
             collapseNavMenu = !collapseNavMenu;

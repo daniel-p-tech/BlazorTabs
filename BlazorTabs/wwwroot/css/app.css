@@ -182,3 +182,14 @@ app {
         display: block;
     }
 }
+
+.settings-icon {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: currentColor;
+    mask-image: url("../images/settings.svg");
+    -webkit-mask-image: url("../images/settings.svg");
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+}
