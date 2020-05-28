@@ -1,14 +1,18 @@
-﻿@inherits DynamicTabSetBase
+﻿@inject AppState AppState
+@inject TabService TabService
 
 @if (Tabs.Count > 0)
 {
-    <div class="tab">
-        @foreach (var tab in Tabs)
-        {
-            <button style="@GetTabButtonStyle(tab)" @onclick="@(() => SetActiveTab(tab))">@tab.Title</button>
-            <button style="@GetTabButtonStyle(tab)" @onclick="@(() => RemoveTab(tab))">X</button>
-        }
-    </div>
+    @if (AppState.RoutingType != Models.RoutingType.Mobile)
+    {
+        <div class="tab">
+            @foreach (var tab in Tabs)
+            {
+                <button style="@GetTabButtonStyle(tab)" @onclick="@(() => SetActiveTab(tab))">@tab.Title</button>
+                <button style="@GetTabButtonStyle(tab)" @onclick="@(() => RemoveTab(tab))">X</button>
+            }
+        </div>
+    }
 
     @foreach (var tab in Tabs)
     {

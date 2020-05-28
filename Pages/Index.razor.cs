@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using BlazorTabs.Components;
 
 namespace BlazorTabs.Pages
@@ -21,8 +22,10 @@ namespace BlazorTabs.Pages
             StateHasChanged();
         }
 
-        private void TabService_OnOpenTab(string page, object[] args)
+        private void TabService_OnOpenTab(string page, string[] args)
         {
+            var parameters = new Dictionary<string, object>();
+
             switch (page)
             {
                 case "Counter":
@@ -35,8 +38,7 @@ namespace BlazorTabs.Pages
                     m_tabs.Add(new DynamicTab(new Documents(), page));
                     break;
                 case "DocumentDetail":
-                    int documentId = (int)args[0];
-                    var parameters = new Dictionary<string, object>();
+                    int documentId = int.Parse(args[0]);
                     parameters.Add("DocumentId", documentId);
                     m_tabs.Add(new DynamicTab(new DocumentDetail(), "Document - " + documentId, parameters));
                     break;

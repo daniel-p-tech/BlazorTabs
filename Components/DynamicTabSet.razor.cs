@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace BlazorTabs.Components
 {
-    public class DynamicTabSetBase : ComponentBase
+    public partial class DynamicTabSet
     {
         [Parameter]
         public ObservableCollection<DynamicTab> Tabs { get; set; }
@@ -19,6 +19,7 @@ namespace BlazorTabs.Components
                 m_activeTab = Tabs.Last();
             }
             Tabs.CollectionChanged += Tabs_CollectionChanged;
+            TabService.OnBack += TabService_OnBack;
         }
 
         private void Tabs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -71,6 +72,14 @@ namespace BlazorTabs.Components
             Tabs.Remove(tab);
             m_activeTab = newTabIndex >= 0 ? Tabs[newTabIndex] : null;
             StateHasChanged();
+        }
+
+        private void TabService_OnBack()
+        {
+            if (Tabs.Count() > 1)
+            {
+                RemoveTab(Tabs.Last());
+            }
         }
     }
 }

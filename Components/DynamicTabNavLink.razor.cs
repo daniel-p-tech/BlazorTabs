@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorTabs.Components
@@ -13,6 +12,11 @@ namespace BlazorTabs.Components
 
         [Parameter]
         public string Text { get; set; }
+
+        [Parameter]
+        public bool IsNavBarLink { get; set; } = false;
+
+        public string CssClass { get { return IsNavBarLink ? "nav-link text-light" : null; } }
 
         protected override void OnInitialized()
         {
@@ -26,7 +30,8 @@ namespace BlazorTabs.Components
 
         private void OnClick()
         {
-            TabService.OpenTab(Page, null);
+            string[] pageInfo = Page.Split("/");
+            TabService.OpenTab(pageInfo[0], pageInfo.Count() == 1 ? null : pageInfo.Skip(1).ToArray());
         }
     }
 }

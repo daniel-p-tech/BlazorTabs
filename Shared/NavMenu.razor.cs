@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Web;
+using BlazorTabs.Services;
 
 namespace BlazorTabs.Shared
 {
@@ -17,9 +17,9 @@ namespace BlazorTabs.Shared
             m_isNavMenuVisible = !m_isNavMenuVisible;
         }
 
-        private void OnClick(string page, params object[] args)
+        private void Back()
         {
-            TabService.OpenTab(page, args);
+            TabService.Back();
         }
     }
 }

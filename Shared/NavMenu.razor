@@ -8,15 +8,18 @@
     <div class="@NavMenuCssClass navbar-collapse d-sm-inline-flex flex-sm-row-reverse" @onclick="ToggleNavMenu">
         <ul class="navbar-nav flex-grow-1">
             <li class="nav-item">
-                <DynamicTabNavLink Page="Counter" Text="Counter" />
+                <DynamicTabNavLink Page="Counter" Text="Counter" IsNavBarLink=true />
             </li>
             <li class="nav-item">
-                <DynamicTabNavLink Page="FetchData" Text="Fetch Data" />
+                <DynamicTabNavLink Page="FetchData" Text="Fetch Data" IsNavBarLink="true" />
             </li>
             <li class="nav-item">
-                <DynamicTabNavLink Page="Documents" Text="Documents" />
+                <DynamicTabNavLink Page="Documents" Text="Documents" IsNavBarLink="true" />
             </li>
-            <li class="nav-item ml-lg-auto dropdown">
+            <li class="nav-item ml-lg-auto">
+                <button class="btn btn-dark" type="button" @onclick="Back">Back</button>
+            </li>
+            <li class="nav-item dropdown">
                 <Settings />
             </li>
         </ul>
