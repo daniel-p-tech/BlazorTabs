@@ -22,9 +22,14 @@ namespace BlazorTabs.Pages
             StateHasChanged();
         }
 
-        private void TabService_OnOpenTab(string page, string[] args)
+        private void TabService_OnOpenTab(string page, string[] args, bool resetTabs)
         {
             var parameters = new Dictionary<string, object>();
+
+            if (resetTabs == true)
+            {
+                m_tabs.Clear();
+            }
 
             switch (page)
             {
@@ -44,6 +49,7 @@ namespace BlazorTabs.Pages
                     break;
             }
 
+            TabService.TabCountChanged(m_tabs.Count());
             StateHasChanged();
         }
     }

@@ -12,6 +12,15 @@ namespace BlazorTabs.Shared
         private bool m_isNavMenuVisible = true;
         private string NavMenuCssClass => m_isNavMenuVisible ? "collapse" : null;
 
+        private bool IsBackButtonMenuVisible { get; set; } = true;
+
+        protected override void OnInitialized()
+        {
+            IsBackButtonMenuVisible = AppState.RoutingType == Models.RoutingType.Mobile;
+            AppState.OnRoutingTypeChanged += AppState_OnRoutingTypeChanged;
+            TabService.OnTabCountChanged += TabService_OnTabCountChanged;
+        }
+
         private void ToggleNavMenu()
         {
             m_isNavMenuVisible = !m_isNavMenuVisible;
@@ -20,6 +29,17 @@ namespace BlazorTabs.Shared
         private void Back()
         {
             TabService.Back();
+        }
+
+        private void AppState_OnRoutingTypeChanged()
+        {
+            IsBackButtonMenuVisible = false;
+        }
+
+        private void TabService_OnTabCountChanged(int tabsNum)
+        {
+            IsBackButtonMenuVisible = AppState.RoutingType == Models.RoutingType.Mobile && tabsNum > 1;
+            StateHasChanged();
         }
     }
 }

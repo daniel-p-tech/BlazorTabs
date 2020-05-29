@@ -80,6 +80,8 @@ namespace BlazorTabs.Components
             {
                 RemoveTab(Tabs.Last());
             }
+
+            TabService.TabCountChanged(Tabs.Count());
         }
     }
 }

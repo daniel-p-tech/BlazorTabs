@@ -1,13 +1,16 @@
 ﻿@inject AppState AppState
 @inject TabService TabService
+@using BlazorTabs.Models
 
 @switch (AppState.RoutingType)
 {
-    case Models.RoutingType.Default:
+    case RoutingType.Default:
         <a class="@CssClass" href="@Page">@Text</a>
         break;
-    case Models.RoutingType.Desktop:
-    case Models.RoutingType.Mobile:
-        <a class="@CssClass" @onclick="@OnClick" href="">@Text</a>
+    case RoutingType.Desktop:
+        <a class="@CssClass" @onclick="@(() => OnClick(false))" href="">@Text</a>
+        break;
+    case RoutingType.Mobile:
+        <a class="@CssClass" @onclick="@(() => OnClick(IsNavBarLink))" href="">@Text</a>
         break;
 }
