@@ -3,10 +3,15 @@
 
 <h3>Document Detail</h3>
 
+
 @if (Document != null)
 {
     <p>Document ID: <b>@Document.DocumentId</b></p>
     <p>Document Description: <b>@Document.Description</b></p>
 }
 
-<DynamicTabNavLink Page="Counter" Text="Go to Counter component" />
+<DynamicTabNavLink Page="FetchData" Text="Go to Fetch Data component" />
+
+<div class="border border-dark m-5 p-5">
+    <Counter />
+</div>
