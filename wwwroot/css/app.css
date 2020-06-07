@@ -193,3 +193,10 @@ app {
     mask-repeat: no-repeat;
     -webkit-mask-repeat: no-repeat;
 }
+
+.settings-dropdown-menu {
+    position: fixed;
+    top: 53px;
+    right: 22px;
+    width: 150px;
+}

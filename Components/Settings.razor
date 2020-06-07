@@ -1,16 +1,22 @@
 ﻿@inject AppState AppState
+@inject IJSRuntime JSRuntime
+@implements IDisposable
 
 <div class="dropdown @SettingsDropdownCssClass">
+    <button @ref="m_btnToggleRef" class="btn btn-secondary" type="button" @onclick="ToggleVisible"><i class="settings-icon"></i></button>
+    <div @ref="m_divDropdownMenuRef" class="dropdown-menu dropdown-menu-right @SettingsDropdownCssClass">
+        <a class="dropdown-item" href="" @onclick="@(e => OnClick("Default"))">Default</a>
+        <a class="dropdown-item" href="" @onclick="@(e => OnClick("Desktop"))">Desktop</a>
+        <a class="dropdown-item" href="" @onclick="@(e => OnClick("Mobile"))">Mobile</a>
+    </div>
+</div>
+
+@*<div @ref="divSettings" class="dropdown @SettingsDropdownCssClass">
+    <button class="btn btn-primary" type="button" @onclick="SetElementText">SetElementText</button>
     <button class="btn btn-secondary dropdown-toggle" type="button" @onclick="ToggleSettings">Routing</button>
     <div class="dropdown-menu @SettingsDropdownCssClass">
         <a class="dropdown-item" href="" @onclick="@(e => OnClick("Default"))">Default</a>
         <a class="dropdown-item" href="" @onclick="@(e => OnClick("Desktop"))">Desktop</a>
         <a class="dropdown-item" href="" @onclick="@(e => OnClick("Mobile"))">Mobile</a>
     </div>
-</div>
-@*<a class="nav-link dropdown-toggle" href="#" role="button" @onclick="ToggleSettings">Settings</a>
-    <div class="dropdown-menu @SettingsDropdownCssClass">
-        <a class="dropdown-item" href="#" @onclick="@(e => OnClick("Default"))">Default</a>
-        <a class="dropdown-item" href="#" @onclick="@(e => OnClick("Desktop"))">Desktop</a>
-        <a class="dropdown-item" href="#" @onclick="@(e => OnClick("Mobile"))">Mobile</a>
-    </div>*@
+</div>*@

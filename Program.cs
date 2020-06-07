@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using BlazorTabs.Services;
+using Microsoft.JSInterop;
 
 namespace BlazorTabs
 {
@@ -15,6 +16,7 @@ namespace BlazorTabs
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            //builder.Services.AddSingleton<IJSRuntime>();
 
             // app state
             builder.Services.AddSingleton<AppState>();
