@@ -6,10 +6,17 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-<Settings />
+<DropDownList Items="@SettingsItems" ItemSelected="@ItemSelected" ButtonImageClass="settings-icon" ButtonText="Test" />
 
 @code {
     private int currentCount = 0;
+
+    private string[] SettingsItems = new string[] { "Default", "Desktop", "Mobile" };
+
+    private void ItemSelected(string option)
+    {
+        Console.WriteLine(option);
+    }
 
     private void IncrementCount()
     {

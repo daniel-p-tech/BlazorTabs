@@ -1,0 +1,20 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div class="dropdown @SettingsDropdownCssClass">
+    <button @ref="m_btnToggleRef" class="btn btn-secondary" type="button" @onclick="ToggleVisible">
+        @if (ButtonText != null)
+        {
+            @ButtonText
+        }
+        @if (ButtonImageClass != null)
+        {
+            <i class="@ButtonImageClass"></i>
+        }
+    </button>
+    <div @ref="m_divDropdownMenuRef" class="dropdown-menu dropdown-menu-right @SettingsDropdownCssClass">
+        @foreach (var item in Items)
+        {
+            <a class="dropdown-item" href="javascript:void(0)" @onclick="@(e => OnClick(item))">@item</a>
+        }
+    </div>
+</div>
