@@ -1,5 +1,6 @@
 ﻿@inject AppState AppState
 @inject TabService TabService
+@inject NavigationManager NavigationManager
 
 <nav class="navbar fixed-top navbar-expand-sm navbar-template navbar-dark bg-dark border-bottom box-shadow">
     <a class="navbar-brand" href="#">Blazor Tabs</a>
@@ -9,14 +10,8 @@
             <button class="btn btn-sm align-middle btn-primary" @onclick="Back" type="button">Back</button>
         }
         <div class="px-2">
-            <Settings />
+            <DropDownList Items="@RoutingTypes" ItemSelected="@RoutingTypeChanged" ButtonImageClass="settings-icon" />
         </div>
-        @*<ul class="navbar-nav flex-row">
-                <li class="nav-item"><a class="nav-link px-2" href="#">F</a></li>
-                <li class="nav-item"><a class="nav-link px-2" href="#">T</a></li>
-                <li class="nav-item"><a class="nav-link px-2" href="#">Y</a></li>
-                <li class="nav-item"><a class="nav-link px-2" href="#">I</a></li>
-            </ul>*@
         <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>

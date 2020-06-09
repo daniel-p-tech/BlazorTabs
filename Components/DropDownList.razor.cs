@@ -12,6 +12,7 @@ namespace BlazorTabs.Components
         private ElementReference m_btnToggleRef;
         private ElementReference m_divDropdownMenuRef;
         private DotNetObjectReference<DropDownList> m_componentRef;
+        private Guid m_componentGuid = Guid.NewGuid();
 
         private bool m_isVisible = false;
 
@@ -47,17 +48,16 @@ namespace BlazorTabs.Components
         {
             if (m_isVisible)
             {
-                await JSRuntime.InvokeVoidAsync("blazorTabs.registerDropdownComponent", m_btnToggleRef, m_divDropdownMenuRef, m_componentRef);
+                await JSRuntime.InvokeVoidAsync("blazorTabs.registerDropdownComponent", m_btnToggleRef, m_divDropdownMenuRef, m_componentRef, m_componentGuid);
             }
             else
             {
-                await JSRuntime.InvokeVoidAsync("blazorTabs.unregisterDropdownComponent", m_componentRef);
+                await JSRuntime.InvokeVoidAsync("blazorTabs.unregisterDropdownComponent", m_componentGuid);
             }
         }
 
         private void OnClick(string option)
         {
-            //AppState.SetRoutingType((RoutingType)(Enum.Parse(typeof(RoutingType), option)));
             m_isVisible = false;
             ItemSelected.InvokeAsync(option);
         }
