@@ -1,25 +1,41 @@
 ﻿window.blazorTabs = {
 
     dropdownComponents: [],
+    dynamicTabContentComponents: [],
+
+    registerDynamicTabContentComponent: (div, component, componentGuid) => {
+        let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabContentComponents, componentGuid);
+        if (index === -1) {
+            blazorTabs.dynamicTabContentComponents.push({ div: div, component: component, componentGuid: componentGuid });
+        }
+    },
+
+    unregisterDynamicTabComponent: (componentGuid) => {
+        blazorTabs.unregisterComponent(blazorTabs.dynamicTabContentComponents, componentGuid);
+    },
 
     registerDropdownComponent: (button, dropdownMenu, component, componentGuid) => {
-        let index = blazorTabs.findDropdownComponentIndex(componentGuid);
+        let index = blazorTabs.findComponentIndex(blazorTabs.dropdownComponents, componentGuid);
         if (index === -1) {
             blazorTabs.dropdownComponents.push({ button: button, dropdownMenu: dropdownMenu, component: component, componentGuid: componentGuid });
         }
     },
 
     unregisterDropdownComponent: (componentGuid) => {
-        let index = blazorTabs.findDropdownComponentIndex(componentGuid);
+        blazorTabs.unregisterComponent(blazorTabs.dropdownComponents, componentGuid);
+    },
+
+    unregisterComponent: (components, componentGuid) => {
+        let index = blazorTabs.findComponentIndex(blazorTabs.dropdownComponents, componentGuid);
         if (index !== -1) {
-            blazorTabs.dropdownComponents.splice(index, 1);
+            components.splice(index, 1);
         }
     },
 
-    findDropdownComponentIndex: (componentGuid) => {
+    findComponentIndex: (components, componentGuid) => {
         let index = -1;
         for (let i = 0; i < blazorTabs.dropdownComponents.length; i++) {
-            if (blazorTabs.dropdownComponents[i].componentGuid === componentGuid) {
+            if (components[i].componentGuid === componentGuid) {
                 index = i;
                 break;
             }
@@ -37,5 +53,13 @@ window.addEventListener('mouseup', function (event) {
                 dropdownComponent.component.invokeMethodAsync('CloseDropdown');
             }
         }
+    }
+});
+
+window.addEventListener("resize", function () {
+    for (let i = 0; i < blazorTabs.dynamicTabContentComponents.length; i++) {
+        let dynamicTabContentComponent = blazorTabs.dynamicTabContentComponents[i];
+        let height = window.innerHeight - dynamicTabContentComponent.div.getBoundingClientRect().top;
+        dynamicTabContentComponent.component.invokeMethodAsync('Resize', height);
     }
 });

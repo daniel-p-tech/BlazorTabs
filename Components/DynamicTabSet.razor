@@ -16,8 +16,8 @@
 
     @foreach (var tab in Tabs)
     {
-        <div @key="tab" class="@GetTabClass(tab)" style="height: 100%">
+        <DynamicTabContent @key="tab" CssClass="@GetTabClass(tab)">
             @RenderTabComponent(tab)
-        </div>
+        </DynamicTabContent>
     }
 }
