@@ -7,37 +7,51 @@ namespace BlazorTabs.Components
 {
     public partial class DynamicTabContent
     {
-        private ElementReference m_divContentRef;
-        private DotNetObjectReference<DynamicTabContent> m_componentRef;
-        private Guid m_componentGuid = Guid.NewGuid();
-
-        private string Height { get; set; }
-
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         [Parameter]
-        public string CssClass { get; set; } = "tabcontent-visible";
+        public string CssClass { get; set; }
+
+        [Parameter]
+        public DynamicTab ParentTab { get; set; }
+
+        [CascadingParameter]
+        public DynamicTabSet DynamicTabSet { get; set; }
+
+        private string Height { get; set; }
+
+        protected override void OnInitialized()
+        {
+            TabService.OnActiveTabChanged += TabService_OnActiveTabChanged;
+            TabService.OnTabSetResized += TabService_OnTabSetResized;
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                m_componentRef = DotNetObjectReference.Create(this);
-                await JSRuntime.InvokeVoidAsync("blazorTabs.registerDynamicTabContentComponent", m_divContentRef, m_componentRef, m_componentGuid);
+                Height = await JSRuntime.InvokeAsync<int>("blazorTabs.getDynamicTabSetComponentHeight", DynamicTabSet.ComponentGuid) + "px";
+                StateHasChanged();
             }
         }
 
-        [JSInvokable]
-        public void Resize(int height)
+        private void TabService_OnActiveTabChanged()
         {
-            Height = height + "px";
-            StateHasChanged();
+            if (DynamicTabSet.ActiveTab == ParentTab)
+            {
+                Height = DynamicTabSet.ContentHeight + "px";
+                StateHasChanged();
+            }
         }
 
-        public void Dispose()
+        private void TabService_OnTabSetResized()
         {
-            m_componentRef?.Dispose();
+            if (DynamicTabSet.ActiveTab == ParentTab)
+            {
+                Height = DynamicTabSet.ContentHeight + "px";
+                StateHasChanged();
+            }
         }
     }
 }

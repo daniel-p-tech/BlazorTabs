@@ -1,5 +1,6 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@inject TabService TabService
+@inject IJSRuntime JSRuntime
 
-<div @ref="m_divContentRef"  class="@CssClass" style="height: @Height; overflow-y: auto">
+<div class="@CssClass" style="height: @Height; overflow-y: auto">
     @ChildContent
 </div>

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace BlazorTabs.Components
 {
@@ -12,14 +14,32 @@ namespace BlazorTabs.Components
 
         protected DynamicTab m_activeTab;
 
+        private ElementReference m_divPlaceholderRef;
+        private DotNetObjectReference<DynamicTabSet> m_componentRef;
+        private Guid m_componentGuid = Guid.NewGuid();
+
+        public int ContentHeight { get; set; } = 0;
+        public DynamicTab ActiveTab { get { return m_activeTab; } }
+        public Guid ComponentGuid {  get { return m_componentGuid; } }
+
         protected override void OnInitialized()
         {
             if (Tabs.Count > 0)
             {
                 m_activeTab = Tabs.Last();
+                TabService.ActiveTabChanged();
             }
             Tabs.CollectionChanged += Tabs_CollectionChanged;
             TabService.OnBack += TabService_OnBack;
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                m_componentRef = DotNetObjectReference.Create(this);
+                await JSRuntime.InvokeVoidAsync("blazorTabs.registerDynamicTabSetComponent", m_divPlaceholderRef, m_componentRef, m_componentGuid);
+            }
         }
 
         private void Tabs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -27,6 +47,7 @@ namespace BlazorTabs.Components
             if (e.NewItems?.Count > 0)
             {
                 m_activeTab = (DynamicTab)e.NewItems[0];
+                TabService.ActiveTabChanged();
             }
         }
 
@@ -63,6 +84,7 @@ namespace BlazorTabs.Components
         protected void SetActiveTab(DynamicTab tab)
         {
             m_activeTab = tab;
+            TabService.ActiveTabChanged();
             StateHasChanged();
         }
 
@@ -71,6 +93,7 @@ namespace BlazorTabs.Components
             int newTabIndex = Math.Min(Tabs.IndexOf(tab), Tabs.Count - 2);
             Tabs.Remove(tab);
             m_activeTab = newTabIndex >= 0 ? Tabs[newTabIndex] : null;
+            TabService.ActiveTabChanged();
             StateHasChanged();
         }
 
@@ -82,6 +105,18 @@ namespace BlazorTabs.Components
             }
 
             TabService.TabCountChanged(Tabs.Count());
+        }
+
+        [JSInvokable]
+        public void SetContentHeight(int height)
+        {
+            ContentHeight = height;
+            TabService.TabSetResized();
+        }
+
+        public void Dispose()
+        {
+            m_componentRef?.Dispose();
         }
     }
 }
