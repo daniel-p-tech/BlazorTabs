@@ -4,26 +4,24 @@
 @inject IJSRuntime JSRuntime
 
 <CascadingValue Value=this IsFixed="true">
-    @if (Tabs.Count >= 0)
-    {
-        @if (AppState.RoutingType != Models.RoutingType.Mobile)
-        {
-            <div class="tab">
-                @foreach (var tab in Tabs)
-                {
-                    <button style="@GetTabButtonStyle(tab)" @onclick="@(() => SetActiveTab(tab))">@tab.Title</button>
-                    <button style="@GetTabButtonStyle(tab)" @onclick="@(() => RemoveTab(tab))">X</button>
-                }
-            </div>
-        }
-
-        <div @ref="m_divPlaceholderRef" />
-
+    <div class="tabset d-flex" style="@GetTabSetStyle()" @ref="m_divTabSetRef">
+        <button class="tabset-button-scroll-left p-2" @onclick="@(async () => await ScrollLeft())" />
         @foreach (var tab in Tabs)
         {
-            <DynamicTabContent @key="tab" CssClass="@GetTabClass(tab)" ParentTab="tab">
-                @RenderTabComponent(tab)
-            </DynamicTabContent>
+            <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex">
+                <button class="text-nowrap" @onclick="@(async () => await SetActiveTab(tab))">@tab.Title</button>
+                <button class="tabset-button-close pl-1" @onclick="@(() => RemoveTab(tab))">&times;</button>
+            </div>
         }
+        <button class="tabset-button-scroll-right p-2" @onclick="@(async () => await ScrollRight())" />
+    </div>
+
+    <div @ref="m_divPlaceholderRef" />
+
+    @foreach (var tab in Tabs)
+    {
+        <DynamicTabContent @key="tab" CssClass="@GetTabClass(tab)" ParentTab="tab">
+            @RenderTabComponent(tab)
+        </DynamicTabContent>
     }
 </CascadingValue>

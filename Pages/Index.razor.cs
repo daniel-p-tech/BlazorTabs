@@ -19,6 +19,15 @@ namespace BlazorTabs.Pages
         private void AppState_OnRoutingTypeChanged()
         {
             m_tabs.Clear();
+
+            if (AppState.RoutingType == Models.RoutingType.Desktop)
+            {
+                for (int i = 1; i <= 10; i++)
+                {
+                    m_tabs.Add(new DynamicTab(new Documents(), "Documents - " + i.ToString("##")));
+                }
+            }
+
             StateHasChanged();
         }
 

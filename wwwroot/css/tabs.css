@@ -1,48 +1,70 @@
-﻿/* Style the tab */
-.tab {
-    overflow: hidden;
+﻿.tabset {
+    overflow-x: auto;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
 }
 
-/* Style the buttons inside the tab */
-.tab button {
+/*.tabset::-webkit-scrollbar {
+    display: none;
+}
+*/
+
+.tabset button {
     background-color: inherit;
-    float: left;
     border: none;
     outline: none;
     cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-    font-size: 17px;
+    padding: 0px 0px 0px 0px;
 }
 
-/* Change background color of buttons on hover */
-.tab button:hover {
-    background-color: #ddd;
+.tabset div {
+    border-right: 1px;
+    border-right-style: solid;
 }
 
-/* Create an active/current tablink class */
-.tab button.active {
-    background-color: #ccc;
+.tabset div:hover {
+    background-color: red;
 }
 
-/* Style the tab content */
-.tabcontent-hidden {
+.tabset div.active {
+    background-color: green;
+}
+
+.tabset-button-close {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.tabset-button-scroll-left {
+    position: sticky;
+    left: 0px;
+    background-color: #CCCCCC;
+    border: none;
+    outline: none;
+}
+
+.tabset-button-scroll-left::after {
+    content: "\25C0";
+}
+
+.tabset-button-scroll-right {
+    position: sticky;
+    right: 0px;
+    background-color: #CCCCCC;
+    border: none;
+    outline: none;
+}
+
+.tabset-button-scroll-right::after {
+    content: "\25B6";
+}
+
+.tab-content-hidden {
     display: none;
 }
 
-.tabcontent-visible {
+.tab-content-visible {
     display: block;
     border: 1px solid #ccc;
     border-top: none;
-}
-
-.fill {
-    min-height: 100%;
-    height: 100%;
-}
-
-.min-100 {
-    min-height: 100%;
 }

@@ -15,6 +15,7 @@ namespace BlazorTabs.Components
         protected DynamicTab m_activeTab;
 
         private ElementReference m_divPlaceholderRef;
+        private ElementReference m_divTabSetRef;
         private DotNetObjectReference<DynamicTabSet> m_componentRef;
         private Guid m_componentGuid = Guid.NewGuid();
 
@@ -38,8 +39,10 @@ namespace BlazorTabs.Components
             if (firstRender)
             {
                 m_componentRef = DotNetObjectReference.Create(this);
-                await JSRuntime.InvokeVoidAsync("blazorTabs.registerDynamicTabSetComponent", m_divPlaceholderRef, m_componentRef, m_componentGuid);
+                await JSRuntime.InvokeVoidAsync("blazorTabs.registerDynamicTabSetComponent", m_divTabSetRef, m_divPlaceholderRef, m_componentRef, m_componentGuid);
             }
+
+            await JSRuntime.InvokeVoidAsync("blazorTabs.updateScrollButtons", m_componentGuid);
         }
 
         private void Tabs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -67,23 +70,32 @@ namespace BlazorTabs.Components
             builder.CloseComponent();
         };
 
-        protected string GetTabButtonStyle(DynamicTab tab)
+        protected string GetTabSetStyle()
         {
-            return m_activeTab == tab
-                ? "background-color: #ccc"
-                : "background-color: inherit";
+            return AppState.RoutingType == Models.RoutingType.Desktop && Tabs.Count > 0 
+                ? null 
+                : "visibility: collapse";
+        }
+
+        protected string GetTabSetButtonWrapperClass(DynamicTab tab)
+        {
+            return m_activeTab == tab ? "active" : null;
         }
 
         protected string GetTabClass(DynamicTab tab)
         {
             return tab == m_activeTab
-                ? "tabcontent-visible"
-                : "tabcontent-hidden";
+                ? "tab-content-visible"
+                : "tab-content-hidden";
         }
 
-        protected void SetActiveTab(DynamicTab tab)
+        protected async Task SetActiveTab(DynamicTab tab)
         {
             m_activeTab = tab;
+
+            int tabIndex = Tabs.IndexOf(m_activeTab);
+            await JSRuntime.InvokeVoidAsync("blazorTabs.setActiveTab", m_componentGuid, tabIndex);
+
             TabService.ActiveTabChanged();
             StateHasChanged();
         }
@@ -105,6 +117,16 @@ namespace BlazorTabs.Components
             }
 
             TabService.TabCountChanged(Tabs.Count());
+        }
+
+        private async Task ScrollLeft()
+        {
+            await JSRuntime.InvokeVoidAsync("blazorTabs.scrollLeftDynamicTabSet", m_componentGuid);
+        }
+
+        private async Task ScrollRight()
+        {
+            await JSRuntime.InvokeVoidAsync("blazorTabs.scrollRightDynamicTabSet", m_componentGuid);
         }
 
         [JSInvokable]

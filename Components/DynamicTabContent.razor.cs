@@ -19,37 +19,28 @@ namespace BlazorTabs.Components
         [CascadingParameter]
         public DynamicTabSet DynamicTabSet { get; set; }
 
-        private string Height { get; set; }
+        private int Height { get; set; }
 
         protected override void OnInitialized()
         {
-            TabService.OnActiveTabChanged += TabService_OnActiveTabChanged;
-            TabService.OnTabSetResized += TabService_OnTabSetResized;
+            TabService.OnActiveTabChanged += UpdateHeight;
+            TabService.OnTabSetResized += UpdateHeight;
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                Height = await JSRuntime.InvokeAsync<int>("blazorTabs.getDynamicTabSetComponentHeight", DynamicTabSet.ComponentGuid) + "px";
+                Height = DynamicTabSet.ContentHeight = await JSRuntime.InvokeAsync<int>("blazorTabs.getDynamicTabSetComponentHeight", DynamicTabSet.ComponentGuid);
                 StateHasChanged();
             }
         }
 
-        private void TabService_OnActiveTabChanged()
+        private void UpdateHeight()
         {
             if (DynamicTabSet.ActiveTab == ParentTab)
             {
-                Height = DynamicTabSet.ContentHeight + "px";
-                StateHasChanged();
-            }
-        }
-
-        private void TabService_OnTabSetResized()
-        {
-            if (DynamicTabSet.ActiveTab == ParentTab)
-            {
-                Height = DynamicTabSet.ContentHeight + "px";
+                Height = DynamicTabSet.ContentHeight;
                 StateHasChanged();
             }
         }
