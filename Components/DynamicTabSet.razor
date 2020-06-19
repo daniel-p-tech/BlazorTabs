@@ -5,15 +5,15 @@
 
 <CascadingValue Value=this IsFixed="true">
     <div class="tabset d-flex" style="@GetTabSetStyle()" @ref="m_divTabSetRef">
-        <button class="tabset-button-scroll-left p-2" @onclick="@(async () => await ScrollLeft())" />
+        <button class="tabset-button-scroll-left p-2" @onmousedown="@(async () => await ScrollLeft())" />
         @foreach (var tab in Tabs)
         {
-            <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex">
-                <button class="text-nowrap" @onclick="@(async () => await SetActiveTab(tab))">@tab.Title</button>
+            <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex" @onclick="@(async () => await SetActiveTab(tab))">
+                <span class="text-nowrap">@tab.Title</span>
                 <button class="tabset-button-close pl-1" @onclick="@(() => RemoveTab(tab))">&times;</button>
             </div>
         }
-        <button class="tabset-button-scroll-right p-2" @onclick="@(async () => await ScrollRight())" />
+        <button class="tabset-button-scroll-right p-2" @onmousedown="@(async () => await ScrollRight())" />
     </div>
 
     <div @ref="m_divPlaceholderRef" />

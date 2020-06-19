@@ -9,6 +9,12 @@ namespace BlazorTabs.Components
 {
     public partial class DynamicTabSet
     {
+        private enum AfterRenderActionType
+        { 
+            None,
+            ScrollToLastTab,
+        }
+
         [Parameter]
         public ObservableCollection<DynamicTab> Tabs { get; set; }
 
@@ -18,6 +24,8 @@ namespace BlazorTabs.Components
         private ElementReference m_divTabSetRef;
         private DotNetObjectReference<DynamicTabSet> m_componentRef;
         private Guid m_componentGuid = Guid.NewGuid();
+
+        private AfterRenderActionType m_afterRenderActionTypeId = AfterRenderActionType.None;
 
         public int ContentHeight { get; set; } = 0;
         public DynamicTab ActiveTab { get { return m_activeTab; } }
@@ -43,6 +51,13 @@ namespace BlazorTabs.Components
             }
 
             await JSRuntime.InvokeVoidAsync("blazorTabs.updateScrollButtons", m_componentGuid);
+
+            if (m_afterRenderActionTypeId == AfterRenderActionType.ScrollToLastTab)
+            {
+                await JSRuntime.InvokeVoidAsync("blazorTabs.scrollToLastTab", m_componentGuid);
+            }
+            m_afterRenderActionTypeId = AfterRenderActionType.None;
+            Console.WriteLine("OnAfterRenderAsync");
         }
 
         private void Tabs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -50,6 +65,7 @@ namespace BlazorTabs.Components
             if (e.NewItems?.Count > 0)
             {
                 m_activeTab = (DynamicTab)e.NewItems[0];
+                m_afterRenderActionTypeId = AfterRenderActionType.ScrollToLastTab;
                 TabService.ActiveTabChanged();
             }
         }
@@ -70,26 +86,26 @@ namespace BlazorTabs.Components
             builder.CloseComponent();
         };
 
-        protected string GetTabSetStyle()
+        private string GetTabSetStyle()
         {
             return AppState.RoutingType == Models.RoutingType.Desktop && Tabs.Count > 0 
                 ? null 
-                : "visibility: collapse";
+                : "visibility: collapse; height: 0px";
         }
 
-        protected string GetTabSetButtonWrapperClass(DynamicTab tab)
+        private string GetTabSetButtonWrapperClass(DynamicTab tab)
         {
             return m_activeTab == tab ? "active" : null;
         }
 
-        protected string GetTabClass(DynamicTab tab)
+        private string GetTabClass(DynamicTab tab)
         {
             return tab == m_activeTab
                 ? "tab-content-visible"
                 : "tab-content-hidden";
         }
 
-        protected async Task SetActiveTab(DynamicTab tab)
+        private async Task SetActiveTab(DynamicTab tab)
         {
             m_activeTab = tab;
 
@@ -97,16 +113,15 @@ namespace BlazorTabs.Components
             await JSRuntime.InvokeVoidAsync("blazorTabs.setActiveTab", m_componentGuid, tabIndex);
 
             TabService.ActiveTabChanged();
-            StateHasChanged();
         }
 
-        protected void RemoveTab(DynamicTab tab)
+        private void RemoveTab(DynamicTab tab)
         {
             int newTabIndex = Math.Min(Tabs.IndexOf(tab), Tabs.Count - 2);
             Tabs.Remove(tab);
             m_activeTab = newTabIndex >= 0 ? Tabs[newTabIndex] : null;
+
             TabService.ActiveTabChanged();
-            StateHasChanged();
         }
 
         private void TabService_OnBack()
@@ -117,6 +132,7 @@ namespace BlazorTabs.Components
             }
 
             TabService.TabCountChanged(Tabs.Count());
+            StateHasChanged();
         }
 
         private async Task ScrollLeft()

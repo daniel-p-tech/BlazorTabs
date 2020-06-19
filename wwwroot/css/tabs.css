@@ -2,12 +2,14 @@
     overflow-x: auto;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
+    cursor: pointer;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
 }
 
-/*.tabset::-webkit-scrollbar {
+.tabset::-webkit-scrollbar {
     display: none;
 }
-*/
 
 .tabset button {
     background-color: inherit;
@@ -20,14 +22,15 @@
 .tabset div {
     border-right: 1px;
     border-right-style: solid;
+    border-color: #ccc
 }
 
 .tabset div:hover {
-    background-color: red;
+    background-color: lightgray;
 }
 
 .tabset div.active {
-    background-color: green;
+    background-color: darkgray;
 }
 
 .tabset-button-close {

@@ -94,6 +94,14 @@
         }
     },
 
+    scrollToLastTab: (componentGuid) => {
+        let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
+        let dynamicTabSetComponent = blazorTabs.dynamicTabSetComponents[index];
+
+        let tabSet = dynamicTabSetComponent.tabSet;
+        tabSet.scrollLeft = tabSet.scrollWidth - tabSet.offsetWidth;
+    },
+
     //////////////
     // Dropdown //
     //////////////
