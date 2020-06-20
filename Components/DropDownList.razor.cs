@@ -72,6 +72,7 @@ namespace BlazorTabs.Components
 
         public void Dispose()
         {
+            ((IJSInProcessRuntime)JSRuntime).InvokeVoid("blazorTabs.unregisterDropdownComponent", m_componentGuid);
             m_componentRef?.Dispose();
         }
     }

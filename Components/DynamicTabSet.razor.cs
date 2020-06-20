@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using BlazorTabs.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -24,7 +25,9 @@ namespace BlazorTabs.Components
         private ElementReference m_divTabSetRef;
         private DotNetObjectReference<DynamicTabSet> m_componentRef;
         private Guid m_componentGuid = Guid.NewGuid();
+        private int m_scrollLoopId = -1;
 
+        private bool m_suppressRender = false;
         private AfterRenderActionType m_afterRenderActionTypeId = AfterRenderActionType.None;
 
         public int ContentHeight { get; set; } = 0;
@@ -42,6 +45,14 @@ namespace BlazorTabs.Components
             TabService.OnBack += TabService_OnBack;
         }
 
+        protected override bool ShouldRender()
+        {
+            Console.WriteLine("ShouldRender => " + !m_suppressRender);
+            bool suppressRender = m_suppressRender;
+            m_suppressRender = false;
+            return !suppressRender;
+        }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -56,7 +67,9 @@ namespace BlazorTabs.Components
             {
                 await JSRuntime.InvokeVoidAsync("blazorTabs.scrollToLastTab", m_componentGuid);
             }
+
             m_afterRenderActionTypeId = AfterRenderActionType.None;
+            m_suppressRender = false;
             Console.WriteLine("OnAfterRenderAsync");
         }
 
@@ -66,6 +79,7 @@ namespace BlazorTabs.Components
             {
                 m_activeTab = (DynamicTab)e.NewItems[0];
                 m_afterRenderActionTypeId = AfterRenderActionType.ScrollToLastTab;
+
                 TabService.ActiveTabChanged();
             }
         }
@@ -88,7 +102,7 @@ namespace BlazorTabs.Components
 
         private string GetTabSetStyle()
         {
-            return AppState.RoutingType == Models.RoutingType.Desktop && Tabs.Count > 0 
+            return AppState.RoutingType == RoutingType.Desktop && Tabs.Count > 0 
                 ? null 
                 : "visibility: collapse; height: 0px";
         }
@@ -101,18 +115,25 @@ namespace BlazorTabs.Components
         private string GetTabClass(DynamicTab tab)
         {
             return tab == m_activeTab
-                ? "tab-content-visible"
+                ? (AppState.RoutingType == RoutingType.Desktop ? "tab-content-visible-desktop" : "tab-content-visible-mobile")
                 : "tab-content-hidden";
         }
 
         private async Task SetActiveTab(DynamicTab tab)
         {
-            m_activeTab = tab;
+            if (m_activeTab != tab)
+            {
+                m_activeTab = tab;
 
-            int tabIndex = Tabs.IndexOf(m_activeTab);
-            await JSRuntime.InvokeVoidAsync("blazorTabs.setActiveTab", m_componentGuid, tabIndex);
+                int tabIndex = Tabs.IndexOf(m_activeTab);
+                await JSRuntime.InvokeVoidAsync("blazorTabs.setActiveTab", m_componentGuid, tabIndex);
 
-            TabService.ActiveTabChanged();
+                TabService.ActiveTabChanged();
+            }
+            else
+            {
+                m_suppressRender = true;
+            }
         }
 
         private void RemoveTab(DynamicTab tab)
@@ -137,23 +158,39 @@ namespace BlazorTabs.Components
 
         private async Task ScrollLeft()
         {
-            await JSRuntime.InvokeVoidAsync("blazorTabs.scrollLeftDynamicTabSet", m_componentGuid);
+            m_scrollLoopId = await JSRuntime.InvokeAsync<int>("blazorTabs.scrollLeftDynamicTabSet", m_componentGuid);
+            m_suppressRender = true;
         }
 
         private async Task ScrollRight()
         {
-            await JSRuntime.InvokeVoidAsync("blazorTabs.scrollRightDynamicTabSet", m_componentGuid);
+            m_scrollLoopId = await JSRuntime.InvokeAsync<int>("blazorTabs.scrollRightDynamicTabSet", m_componentGuid);
+            m_suppressRender = true;
+        }
+
+        private async Task ScrollStop()
+        {
+            await JSRuntime.InvokeVoidAsync("blazorTabs.stopDynamicTabSetScrolling", m_scrollLoopId);
+            m_suppressRender = true;
         }
 
         [JSInvokable]
         public void SetContentHeight(int height)
         {
             ContentHeight = height;
+
             TabService.TabSetResized();
+        }
+
+        [JSInvokable]
+        public int GetScrollLoopId()
+        {
+            return m_scrollLoopId;
         }
 
         public void Dispose()
         {
+            ((IJSInProcessRuntime)JSRuntime).InvokeVoid("blazorTabs.unregisterDynamicTabSetComponent", m_componentGuid);
             m_componentRef?.Dispose();
         }
     }

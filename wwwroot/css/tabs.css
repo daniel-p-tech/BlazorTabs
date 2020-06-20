@@ -3,8 +3,8 @@
     border: 1px solid #ccc;
     background-color: #f1f1f1;
     cursor: pointer;
-    scroll-behavior: smooth;
     scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .tabset::-webkit-scrollbar {
@@ -13,7 +13,6 @@
 
 .tabset button {
     background-color: inherit;
-    border: none;
     outline: none;
     cursor: pointer;
     padding: 0px 0px 0px 0px;
@@ -36,14 +35,18 @@
 .tabset-button-close {
     font-size: 1.5rem;
     line-height: 1;
+    border: none;
 }
 
 .tabset-button-scroll-left {
     position: sticky;
     left: 0px;
     background-color: #CCCCCC;
-    border: none;
     outline: none;
+    border-top: none;
+    border-right: 1px solid #ccc;
+    border-bottom: none;
+    border-left: none;
 }
 
 .tabset-button-scroll-left::after {
@@ -54,8 +57,11 @@
     position: sticky;
     right: 0px;
     background-color: #CCCCCC;
-    border: none;
     outline: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: 1px solid #ccc;
 }
 
 .tabset-button-scroll-right::after {
@@ -66,8 +72,13 @@
     display: none;
 }
 
-.tab-content-visible {
+.tab-content-visible-desktop {
     display: block;
     border: 1px solid #ccc;
     border-top: none;
+}
+
+.tab-content-visible-mobile {
+    display: block;
+    border: none;
 }

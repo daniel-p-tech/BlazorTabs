@@ -14,36 +14,56 @@
         }
     },
 
-    setDynamicTabSetComponentHeight: (componentGuid) => {
+    unregisterDynamicTabSetComponent: (componentGuid) => {
+        blazorTabs.unregisterComponent(blazorTabs.dynamicTabSetComponents, componentGuid);
+    },
+
+    getDynamicTabSetComponent (componentGuid) {
         let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
         let dynamicTabSetComponent = blazorTabs.dynamicTabSetComponents[index];
+        return dynamicTabSetComponent;
+    },
+
+    setDynamicTabSetComponentHeight: (componentGuid) => {
+        let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componentGuid);
         let height = window.innerHeight - dynamicTabSetComponent.div.getBoundingClientRect().top;
         dynamicTabSetComponent.component.invokeMethodAsync('SetContentHeight', height);
     },
 
     getDynamicTabSetComponentHeight: (componentGuid) => {
-        let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
-        let dynamicTabSetComponent = blazorTabs.dynamicTabSetComponents[index];
+        let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componentGuid);
         let height = window.innerHeight - dynamicTabSetComponent.div.getBoundingClientRect().top;
         return height;
     },
 
     scrollLeftDynamicTabSet: (componentGuid) => {
-        let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
-        let dynamicTabSetComponent = blazorTabs.dynamicTabSetComponents[index];
-        dynamicTabSetComponent.tabSet.scrollLeft -= 50;
+        let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componentGuid);
+        return setInterval(blazorTabs.dynamicTabSetScrollLoop, 10, dynamicTabSetComponent.tabSet, componentGuid, -5);
     },
 
     scrollRightDynamicTabSet: (componentGuid) => {
-        let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
-        let dynamicTabSetComponent = blazorTabs.dynamicTabSetComponents[index];
-        dynamicTabSetComponent.tabSet.scrollLeft += 50;
+        let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componentGuid);
+        return setInterval(blazorTabs.dynamicTabSetScrollLoop, 10, dynamicTabSetComponent.tabSet, componentGuid, 5);
+    },
+
+    stopDynamicTabSetScrolling: (dynamicTabSetScrollLoopId) => {
+        clearInterval(dynamicTabSetScrollLoopId);
+    },
+
+    dynamicTabSetScrollLoop: (tabSet, componenetGuid, delta) => {
+        tabSet.scrollLeft += delta;
+
+        const [isLeftScrollButtonDisabled, isRightScrollButtonDisabled] = blazorTabs.updateScrollButtons(componenetGuid);
+        if ((delta < 0 && isLeftScrollButtonDisabled) || (delta > 0 && isRightScrollButtonDisabled)) {
+            let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componenetGuid);
+            dynamicTabSetComponent.component.invokeMethodAsync('GetScrollLoopId').then(dynamicTabSetScrollLoopId => {
+                clearInterval(dynamicTabSetScrollLoopId);
+            });
+        }
     },
 
     setActiveTab: (componentGuid, tabIndex) => {
-        let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
-        let dynamicTabSetComponent = blazorTabs.dynamicTabSetComponents[index];
-
+        let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componentGuid);
         let tabSet = dynamicTabSetComponent.tabSet;
         let firstTabSetItem = tabSet.children[1];
         let activeTabSetItem = tabSet.children[tabIndex + 1];
@@ -68,8 +88,7 @@
     },
 
     updateScrollButtons: (componentGuid) => {
-        let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
-        let dynamicTabSetComponent = blazorTabs.dynamicTabSetComponents[index];
+        let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componentGuid);
 
         // calculate the width of all tab set buttons
         let tabSet = dynamicTabSetComponent.tabSet;
@@ -87,19 +106,21 @@
 
             leftScrollButton.disabled = tabSet.scrollLeft === 0;
             rightScrollButton.disabled = tabSet.scrollLeft + tabSet.offsetWidth >= tabSet.scrollWidth;
+            rightScrollButton.style.borderLeft = rightScrollButton.disabled ? "none" : null;
         }
         else {
             leftScrollButton.style.display = 'none';
             rightScrollButton.style.display = 'none';
         }
+
+        return [leftScrollButton.disabled, rightScrollButton.disabled];
     },
 
     scrollToLastTab: (componentGuid) => {
-        let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
-        let dynamicTabSetComponent = blazorTabs.dynamicTabSetComponents[index];
-
+        let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componentGuid);
         let tabSet = dynamicTabSetComponent.tabSet;
-        tabSet.scrollLeft = tabSet.scrollWidth - tabSet.offsetWidth;
+        tabSet.scrollLeft = tabSet.scrollWidth;
+        blazorTabs.updateScrollButtons(componentGuid);
     },
 
     //////////////
@@ -113,13 +134,13 @@
         }
     },
 
-    ///////////
-    // Tools //
-    ///////////
-
     unregisterDropdownComponent: (componentGuid) => {
         blazorTabs.unregisterComponent(blazorTabs.dropdownComponents, componentGuid);
     },
+
+    ///////////
+    // Tools //
+    ///////////
 
     unregisterComponent: (components, componentGuid) => {
         let index = blazorTabs.findComponentIndex(components, componentGuid);
