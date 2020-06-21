@@ -119,8 +119,10 @@ namespace BlazorTabs.Components
                 : "tab-content-hidden";
         }
 
-        private async Task SetActiveTab(DynamicTab tab)
+        private async Task SetActiveTabAsync(DynamicTab tab)
         {
+            m_suppressRender = true;
+
             if (m_activeTab != tab)
             {
                 m_activeTab = tab;
@@ -129,10 +131,7 @@ namespace BlazorTabs.Components
                 await JSRuntime.InvokeVoidAsync("blazorTabs.setActiveTab", m_componentGuid, tabIndex);
 
                 TabService.ActiveTabChanged();
-            }
-            else
-            {
-                m_suppressRender = true;
+                m_suppressRender = false;
             }
         }
 
@@ -156,20 +155,26 @@ namespace BlazorTabs.Components
             StateHasChanged();
         }
 
-        private async Task ScrollLeft()
+        private async Task ScrollLeftAsync()
         {
+            Console.WriteLine("ScrollLeftAsync");
+            m_suppressRender = true;
             m_scrollLoopId = await JSRuntime.InvokeAsync<int>("blazorTabs.scrollLeftDynamicTabSet", m_componentGuid);
             m_suppressRender = true;
         }
 
-        private async Task ScrollRight()
+        private async Task ScrollRightAsync()
         {
+            Console.WriteLine("ScrollRightAsync");
+            m_suppressRender = true;
             m_scrollLoopId = await JSRuntime.InvokeAsync<int>("blazorTabs.scrollRightDynamicTabSet", m_componentGuid);
             m_suppressRender = true;
         }
 
-        private async Task ScrollStop()
+        private async Task ScrollStopAsync()
         {
+            Console.WriteLine("ScrollStopAsync");
+            m_suppressRender = true;
             await JSRuntime.InvokeVoidAsync("blazorTabs.stopDynamicTabSetScrolling", m_scrollLoopId);
             m_suppressRender = true;
         }

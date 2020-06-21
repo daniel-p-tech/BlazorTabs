@@ -6,18 +6,18 @@
 <CascadingValue Value=this IsFixed="true">
     <div class="tabset d-flex" style="@GetTabSetStyle()" @ref="m_divTabSetRef">
         <button class="tabset-button-scroll-left p-2"
-                @onmousedown="@(async () => await ScrollLeft())"
-                @onmouseup="@(async () => await ScrollStop())" @onmouseout="@(async () => await ScrollStop())" />
+                @onmousedown="@(() => ScrollLeftAsync())"
+                @onmouseup="@(() => ScrollStopAsync())" @onmouseout="@(() => ScrollStopAsync())" />
         @foreach (var tab in Tabs)
         {
-            <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex" @onclick="@(async () => await SetActiveTab(tab))">
+            <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex" @onclick="@(() => SetActiveTabAsync(tab))">
                 <span class="text-nowrap">@tab.Title</span>
                 <button class="tabset-button-close pl-1" @onclick="@(() => RemoveTab(tab))">&times;</button>
             </div>
         }
         <button class="tabset-button-scroll-right p-2"
-                @onmousedown="@(async () => await ScrollRight())"
-                @onmouseup="@(async () => await ScrollStop())" @onmouseout="@(async () => await ScrollStop())" />
+                @onmousedown="@(() => ScrollRightAsync())"
+                @onmouseup="@(() => ScrollStopAsync())" @onmouseout="@(() => ScrollStopAsync())" />
     </div>
 
     <div @ref="m_divPlaceholderRef" />
