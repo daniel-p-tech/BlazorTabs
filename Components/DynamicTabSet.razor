@@ -1,23 +1,19 @@
 ﻿@implements IDisposable
 @inject AppState AppState
 @inject TabService TabService
-@inject IJSRuntime JSRuntime
+@inject IJSInProcessRuntime  JSRuntime
 
 <CascadingValue Value=this IsFixed="true">
     <div class="tabset d-flex" style="@GetTabSetStyle()" @ref="m_divTabSetRef">
-        <button class="tabset-button-scroll-left p-2"
-                @onmousedown="@(() => ScrollLeftAsync())"
-                @onmouseup="@(() => ScrollStopAsync())" @onmouseout="@(() => ScrollStopAsync())" />
+        <button class="tabset-button-scroll-left p-2" @onmousedown="@ScrollLeft" @onmouseup="@ScrollStop" @onmouseout="@ScrollStop" />
         @foreach (var tab in Tabs)
         {
-            <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex" @onclick="@(() => SetActiveTabAsync(tab))">
+            <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex" @onclick="@(() => SetActiveTab(tab))">
                 <span class="text-nowrap">@tab.Title</span>
                 <button class="tabset-button-close pl-1" @onclick="@(() => RemoveTab(tab))">&times;</button>
             </div>
         }
-        <button class="tabset-button-scroll-right p-2"
-                @onmousedown="@(() => ScrollRightAsync())"
-                @onmouseup="@(() => ScrollStopAsync())" @onmouseout="@(() => ScrollStopAsync())" />
+        <button class="tabset-button-scroll-right p-2" @onmousedown="@ScrollRight" @onmouseup="@ScrollStop" @onmouseout="@ScrollStop" />
     </div>
 
     <div @ref="m_divPlaceholderRef" />

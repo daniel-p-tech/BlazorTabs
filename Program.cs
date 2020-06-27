@@ -16,7 +16,7 @@ namespace BlazorTabs
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            //builder.Services.AddSingleton<IJSRuntime>();
+            builder.Services.AddSingleton(sp => (IJSInProcessRuntime)sp.GetRequiredService<IJSRuntime>());
 
             // app state
             builder.Services.AddSingleton<AppState>();

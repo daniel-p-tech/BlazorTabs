@@ -27,11 +27,11 @@ namespace BlazorTabs.Components
             TabService.OnTabSetResized += UpdateHeight;
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override void OnAfterRender(bool firstRender)
         {
             if (firstRender)
             {
-                Height = DynamicTabSet.ContentHeight = await JSRuntime.InvokeAsync<int>("blazorTabs.getDynamicTabSetComponentHeight", DynamicTabSet.ComponentGuid);
+                Height = DynamicTabSet.ContentHeight = JSRuntime.Invoke<int>("blazorTabs.getDynamicTabSetComponentHeight", DynamicTabSet.ComponentGuid);
                 StateHasChanged();
             }
         }
