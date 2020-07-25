@@ -1,8 +1,10 @@
-﻿.tabset {
-    overflow-x: auto;
+﻿.tabset-wrapper {
     border: 1px solid #ccc;
     background-color: #f1f1f1;
-    cursor: pointer;
+}
+
+.tabset {
+    overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -11,7 +13,7 @@
     display: none;
 }
 
-.tabset button {
+.tabset, .tabset-wrapper button {
     background-color: inherit;
     outline: none;
     cursor: pointer;
@@ -21,7 +23,8 @@
 .tabset div {
     border-right: 1px;
     border-right-style: solid;
-    border-color: #ccc
+    border-color: #ccc;
+    cursor: pointer;
 }
 
 .tabset div:hover {
@@ -47,6 +50,7 @@
     border-right: 1px solid #ccc;
     border-bottom: none;
     border-left: none;
+    cursor: pointer;
 }
 
 .tabset-button-scroll-left::after {
@@ -62,6 +66,7 @@
     border-right: none;
     border-bottom: none;
     border-left: 1px solid #ccc;
+    cursor: pointer;
 }
 
 .tabset-button-scroll-right::after {

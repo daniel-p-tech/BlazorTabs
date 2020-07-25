@@ -1,19 +1,21 @@
 ﻿@implements IDisposable
 @inject AppState AppState
 @inject TabService TabService
-@inject IJSInProcessRuntime  JSRuntime
+@inject IJSInProcessRuntime JSRuntime
 
 <CascadingValue Value=this IsFixed="true">
-    <div class="tabset d-flex" style="@GetTabSetStyle()" @ref="m_divTabSetRef">
-        <button class="tabset-button-scroll-left p-2" @onmousedown="@ScrollLeft" @onmouseup="@ScrollStop" @onmouseout="@ScrollStop" />
-        @foreach (var tab in Tabs)
-        {
-            <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex" @onclick="@(() => SetActiveTab(tab))">
-                <span class="text-nowrap">@tab.Title</span>
-                <button class="tabset-button-close pl-1" @onclick="@(() => RemoveTab(tab))">&times;</button>
-            </div>
-        }
-        <button class="tabset-button-scroll-right p-2" @onmousedown="@ScrollRight" @onmouseup="@ScrollStop" @onmouseout="@ScrollStop" />
+    <div class="tabset-wrapper d-flex" style="@GetTabSetWrapperStyle()" >
+        <button @ref="m_btnLeftScroll" class="tabset-button-scroll-left p-2" @onmousedown="@ScrollLeft" @onmouseup="@ScrollStop" @onmouseout="@ScrollStop" />
+        <div class="tabset d-flex" @ref="m_divTabSetRef">
+            @foreach (var tab in Tabs)
+            {
+                <div class="@GetTabSetButtonWrapperClass(tab) p-2 d-flex" @onclick="@(() => SetActiveTab(tab))">
+                    <span class="text-nowrap">@tab.Title</span>
+                    <button class="tabset-button-close pl-1" @onclick="@(() => RemoveTab(tab))">&times;</button>
+                </div>
+            }
+        </div>
+        <button @ref="m_btnRightScroll" class="tabset-button-scroll-right p-2" @onmousedown="@ScrollRight" @onmouseup="@ScrollStop" @onmouseout="@ScrollStop" />
     </div>
 
     <div @ref="m_divPlaceholderRef" />

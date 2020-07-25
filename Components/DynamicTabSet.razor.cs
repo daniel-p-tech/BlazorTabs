@@ -20,8 +20,10 @@ namespace BlazorTabs.Components
 
         protected DynamicTab m_activeTab;
 
-        private ElementReference m_divPlaceholderRef;
         private ElementReference m_divTabSetRef;
+        private ElementReference m_divPlaceholderRef;
+        private ElementReference m_btnLeftScroll;
+        private ElementReference m_btnRightScroll;
         private DotNetObjectReference<DynamicTabSet> m_componentRef;
         private Guid m_componentGuid = Guid.NewGuid();
         private int m_scrollLoopId = -1;
@@ -58,7 +60,7 @@ namespace BlazorTabs.Components
             if (firstRender)
             {
                 m_componentRef = DotNetObjectReference.Create(this);
-                JSRuntime.InvokeVoid("blazorTabs.registerDynamicTabSetComponent", m_divTabSetRef, m_divPlaceholderRef, m_componentRef, m_componentGuid);
+                JSRuntime.InvokeVoid("blazorTabs.registerDynamicTabSetComponent", m_divTabSetRef, m_divPlaceholderRef, m_btnLeftScroll, m_btnRightScroll, m_componentRef, m_componentGuid);
             }
 
             JSRuntime.InvokeVoid("blazorTabs.updateScrollButtons", m_componentGuid);
@@ -100,7 +102,7 @@ namespace BlazorTabs.Components
             builder.CloseComponent();
         };
 
-        private string GetTabSetStyle()
+        private string GetTabSetWrapperStyle()
         {
             return AppState.RoutingType == RoutingType.Desktop && Tabs.Count > 0 
                 ? null 

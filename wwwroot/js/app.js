@@ -7,10 +7,18 @@
     // TabSet //
     ////////////
 
-    registerDynamicTabSetComponent: (tabSet, div, component, componentGuid) => {
+    registerDynamicTabSetComponent: (tabSet, div, btnLeftScroll, btnRightScroll, component, componentGuid) => {
         let index = blazorTabs.findComponentIndex(blazorTabs.dynamicTabSetComponents, componentGuid);
         if (index === -1) {
-            blazorTabs.dynamicTabSetComponents.push({ tabSet: tabSet, div: div, component: component, componentGuid: componentGuid });
+            blazorTabs.dynamicTabSetComponents.push(
+            {
+                tabSet: tabSet,
+                div: div,
+                btnLeftScroll: btnLeftScroll,
+                btnRightScroll: btnRightScroll,
+                component: component,
+                componentGuid: componentGuid
+            });
         }
     },
 
@@ -65,8 +73,8 @@
     setActiveTab: (componentGuid, tabIndex) => {
         let dynamicTabSetComponent = blazorTabs.getDynamicTabSetComponent(componentGuid);
         let tabSet = dynamicTabSetComponent.tabSet;
-        let firstTabSetItem = tabSet.children[1];
-        let activeTabSetItem = tabSet.children[tabIndex + 1];
+        let firstTabSetItem = tabSet.children[0];
+        let activeTabSetItem = tabSet.children[tabIndex];
 
         let firstTabSetItemRelativeOffsetLeft = firstTabSetItem.offsetLeft - tabSet.offsetLeft;
         let activeTabSetItemRelativeOffsetLeft = activeTabSetItem.offsetLeft - tabSet.offsetLeft;
@@ -79,8 +87,8 @@
         }
 
         // scroll to right if needed
-        let rightScrollButton = tabSet.children[tabSet.children.length - 1];
-        let rightScrollButtonRelativeOffsetLeft = rightScrollButton.offsetLeft - tabSet.offsetLeft;
+        let btnRightScroll = dynamicTabSetComponent.btnRightScroll;
+        let rightScrollButtonRelativeOffsetLeft = btnRightScroll .offsetLeft - tabSet.offsetLeft;
         if (activeTabSetItemRelativeOffsetLeft + activeTabSetItem.offsetWidth > rightScrollButtonRelativeOffsetLeft) {
             let rightScrollDelta = activeTabSetItemRelativeOffsetLeft + activeTabSetItem.offsetWidth - rightScrollButtonRelativeOffsetLeft;
             tabSet.scrollLeft += rightScrollDelta;
@@ -93,27 +101,27 @@
         // calculate the width of all tab set buttons
         let tabSet = dynamicTabSetComponent.tabSet;
         let tabButtonsWidth = 0;
-        for (let i = 1; i < tabSet.children.length - 1; i++) {
+        for (let i = 0; i < tabSet.children.length; i++) {
             tabButtonsWidth += tabSet.children[i].scrollWidth;
         }
 
         // set style of scroll buttons
-        let leftScrollButton = tabSet.children[0];
-        let rightScrollButton = tabSet.children[tabSet.children.length - 1];
+        let btnLeftScroll = dynamicTabSetComponent.btnLeftScroll;
+        let btnRightScroll = dynamicTabSetComponent.btnRightScroll;
         if (tabButtonsWidth > tabSet.offsetWidth) {
-            leftScrollButton.style.display = 'initial';
-            rightScrollButton.style.display = 'initial';
+            btnLeftScroll.style.display = 'initial';
+            btnRightScroll.style.display = 'initial';
 
-            leftScrollButton.disabled = tabSet.scrollLeft === 0;
-            rightScrollButton.disabled = tabSet.scrollLeft + tabSet.offsetWidth >= tabSet.scrollWidth;
-            rightScrollButton.style.borderLeft = rightScrollButton.disabled ? "none" : null;
+            btnLeftScroll.disabled = tabSet.scrollLeft === 0;
+            btnRightScroll.disabled = tabSet.scrollLeft + tabSet.offsetWidth >= tabSet.scrollWidth;
+            btnRightScroll.style.borderLeft = btnRightScroll.disabled ? "none" : null;
         }
         else {
-            leftScrollButton.style.display = 'none';
-            rightScrollButton.style.display = 'none';
+            btnLeftScroll.style.display = 'none';
+            btnRightScroll.style.display = 'none';
         }
 
-        return [leftScrollButton.disabled, rightScrollButton.disabled];
+        return [btnLeftScroll.disabled, btnRightScroll.disabled];
     },
 
     scrollToLastTab: (componentGuid) => {
